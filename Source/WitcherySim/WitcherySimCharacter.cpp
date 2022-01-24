@@ -49,9 +49,16 @@ AWitcherySimCharacter::AWitcherySimCharacter()
 	// FP_Gun->SetupAttachment(Mesh1P, TEXT("GripPoint"));
 	FP_Gun->SetupAttachment(RootComponent);
 
+	FP_Gun->SetVisibility(false, true);
+
 	FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
+
+	// Create the wand
+	FP_Wand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FP_Wand"));
+	FP_Wand->SetupAttachment(RootComponent);
+
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
@@ -171,7 +178,7 @@ void AWitcherySimCharacter::OnFire()
 	// try and play the sound if specified
 	if (FireSound != nullptr)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+		//UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
 
 	// try and play a firing animation if specified
