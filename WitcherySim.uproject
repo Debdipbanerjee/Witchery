@@ -22,6 +22,10 @@
 		{
 			"Name": "UE4Duino",
 			"Enabled": true
+		},
+		{
+			"Name": "HoudiniEngine",
+			"Enabled": true
 		}
 	]
 }
