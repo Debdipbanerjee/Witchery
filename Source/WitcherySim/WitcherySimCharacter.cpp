@@ -89,6 +89,38 @@ AWitcherySimCharacter::AWitcherySimCharacter()
 
 	// Uncomment the following line to turn motion controllers on by default:
 	//bUsingMotionControllers = true;
+
+
+	// Setup the Ability System
+	AbilitySystemComponent = CreateDefaultSubobject<UHeroAbilitySystemComponent>("AbilitySystemComp");
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	Attributes = CreateDefaultSubobject<UWitcheryAttributeSet>("Attributes");
+}
+
+void AWitcherySimCharacter::InitializeAttributes() {
+	if(!(AbilitySystemComponent && DefaultAttributeEffect)) {
+		return;
+	}
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributeEffect, 1, EffectContext);
+
+	if(SpecHandle.IsValid()) {
+		FActiveGameplayEffectHandle GEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	}
+}
+
+void AWitcherySimCharacter::GiveAbilities() {
+	if(!(HasAuthority() && AbilitySystemComponent)) {
+		return;
+	}
+	for(auto& StartupAbility:  DefaultAbilities) {
+		// AbilitySystemComponent->GiveAbility(
+		// 	FGameplayAbilitySpec(StartupAbility, 1, static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
+	}
 }
 
 void AWitcherySimCharacter::BeginPlay()
@@ -110,6 +142,10 @@ void AWitcherySimCharacter::BeginPlay()
 		VR_Gun->SetHiddenInGame(true, true);
 		Mesh1P->SetHiddenInGame(false, true);
 	}
+}
+
+UAbilitySystemComponent* AWitcherySimCharacter::GetAbilitySystemComponent() const {
+	return AbilitySystemComponent;
 }
 
 //////////////////////////////////////////////////////////////////////////

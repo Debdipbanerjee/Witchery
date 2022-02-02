@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
+#include "HeroAbilitySystemComponent.h"
+#include "WitcheryAttributeSet.h"
+#include <GameplayEffectTypes.h>
 #include "WitcherySimCharacter.generated.h"
 
 class UInputComponent;
@@ -15,7 +19,7 @@ class UAnimMontage;
 class USoundBase;
 
 UCLASS(config=Game)
-class AWitcherySimCharacter : public ACharacter
+class AWitcherySimCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -55,9 +59,14 @@ class AWitcherySimCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UMotionControllerComponent* L_MotionController;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", meta = (AllowPrivateAccess = "true"))
+	UHeroAbilitySystemComponent* AbilitySystemComponent;
+
+	UPROPERTY()
+	UWitcheryAttributeSet* Attributes;
+
 public:
 	AWitcherySimCharacter();
-
 protected:
 	virtual void BeginPlay();
 
@@ -69,6 +78,19 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	virtual void InitializeAttributes();
+	virtual void GiveAbilities();
+
+	/** Default Attribute Effect */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Abilities")
+	TSubclassOf<class UGameplayEffect> DefaultAttributeEffect;
+
+	/** Default Attribute Effect */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Abilities")
+	TArray<TSubclassOf<class UGameplayAbility>> DefaultAbilities;
 
 	/** Gun muzzle's offset from the characters location */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
