@@ -57,7 +57,7 @@ AWitcherySimCharacter::AWitcherySimCharacter()
 
 	// Create the wand
 	FP_Wand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FP_Wand"));
-	FP_Wand->SetupAttachment(RootComponent);
+	FP_Wand->SetupAttachment(FirstPersonCameraComponent);
 
 
 	// Default offset from the character location for projectiles to spawn
